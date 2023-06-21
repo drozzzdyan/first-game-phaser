@@ -1,32 +1,25 @@
-const config = {
-  type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: {
-        y: 200,
-      },
-    },
-  },
-  preload,
-  create,
-  update,
-}
+import Phaser from "./phaser.js";
 
-const game = new Phaser.Game(config);
+export default class game extends Phaser.Scene {
+  constructor() {
+    super('game');
+  }
 
-let ball;
 
-function preload() {
-  game.load.image('ball', 'img/ball.png');
-}
+  preload() {
+    this.load.image('ball', './assets/ball.png');
+    this.load.image('ground', './assets/ground.png');
+  }
 
-function create() {
-  ball = game.add.image(400, 400, 'ball');
-}
+  create() {
+    const ball = this.physics.add.sprite(240, 0, 'ball');
+    const ground = this.physics.add.staticImage(400, 550, 'ground')
+    ball.body.collideWorldBounds = true;
+    ball.body.bounce.set(0.6);
+    this.physics.add.collider(ground, ball);
+  }
 
-function update() {
+  update() {
 
+  }
 }
