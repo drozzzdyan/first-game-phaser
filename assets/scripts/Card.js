@@ -24,7 +24,9 @@ class Card extends Phaser.GameObjects.Sprite {
       ease: 'Linear',
       duration: 150,
       onComplete: () => {
-
+        if (params.callback) {
+          params.callback();
+        }
       }
     });
   }

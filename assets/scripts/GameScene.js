@@ -30,8 +30,28 @@ class GameScene extends Phaser.Scene {
     this.timeout = config.timeout;
     this.openedCard = null;
     this.openedCardsCount = 0;
+    this.timer.paused = false,
     this.initCards();
     this.showCards();
+  }
+
+  restart() {
+    let count = 0;
+    let onCardMoveCopleted = () => {
+      ++count;
+      if (count >= this.cards.length) {
+        this.start();
+      }
+    }
+    for (let i = 0; i < this.cards.length; i++) {
+      const card = this.cards[i];
+      card.move({
+        x: this.sys.game.config.width + card.width,
+        y: this.sys.game.config.height + card.height,
+        delay: card.delay,
+        callback: onCardMoveCopleted,
+      })
+    }
   }
 
   createSounds() {
@@ -47,7 +67,7 @@ class GameScene extends Phaser.Scene {
   }
 
   createTimer() {
-    this.time.addEvent({
+    this.timer = this.time.addEvent({
       delay: 1000,
       loop: true,
       callbackScope: this, // передали контекст
@@ -60,8 +80,9 @@ class GameScene extends Phaser.Scene {
     if (this.timeout > 0) {
       --this.timeout;
     } else {
+      this.timer.paused = true,
       this.sounds.timeout.play({ volume: 0.2 });
-      this.start();
+      this.restart();
     }
   }
 
@@ -129,7 +150,7 @@ class GameScene extends Phaser.Scene {
     card.open();
     if (this.openedCardsCount === this.cards.length / 2) {
       this.sounds.complete.play({ volume: 0.2 });
-      this.start();
+      this.restart();
     }
   }
 
